@@ -1,0 +1,142 @@
+
+<!doctype html>
+<html>
+<head>
+<!-- where did I get this script????? -->
+<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+<link rel="stylesheet" media="screen" href="css/style.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cryptocurrency Price Checker</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script type="text/javascript">
+
+function invisable(){
+document.getElementById("description").style.display = "none";
+
+document.getElementById("description2").style.display = "none";
+document.getElementById("rankno").style.display = "none";
+document.getElementById("img").style.display = "none";
+}
+
+var timeout = null;
+function formChanged(){
+
+var name  = document.getElementsByName("currency")[0].value;
+document.getElementById('description').style.display = "inline";
+document.getElementById('description2').style.display = "inline";
+document.getElementById('rankno').style.display = "initial";
+document.getElementById('img').style.display = "inline";
+var request = new XMLHttpRequest(); //open request
+	request.open("GET", "https://api.coinmarketcap.com/v1/ticker/" + name + "/?convert=AUD"); //request url
+	request.onload = function(){ //onload function
+	var data = JSON.parse(request.responseText);
+	renderHTML(data);
+	}
+	request.send();
+
+
+	function renderHTML(data){
+		var htmlString = "";
+		document.getElementById("price").innerHTML = data[0].price_aud;
+		document.getElementById("id").innerHTML = data[0].id;
+		var mktcap = data[0].market_cap_aud;
+
+		var mktcap2 = mktcap.toLocaleString();
+		document.getElementById("mktcap").innerHTML = mktcap2;
+		document.getElementById("rank").innerHTML = data[0].rank;
+		var symbol = data[0].symbol;
+
+
+		var oReq = new XMLHttpRequest();
+		oReq.open("GET", "https://www.cryptocompare.com/api/data/coinlist/");
+			oReq.onload = function(){
+				var img2 = JSON.parse(oReq.responseText);
+				renderHTML(img2);
+				}
+				oReq.send();
+
+
+
+				function renderHTML(img2){
+				var htmlString = "";
+				var name = symbol;
+
+				document.getElementById("img").src = 'https://www.cryptocompare.com'+img2.Data[name].ImageUrl;
+
+		}
+
+
+
+
+	}
+
+
+}
+
+
+</script>
+<style>
+#img{
+	height: 50px;
+	width: 50px;
+	float: left;
+	position: relative;
+	left: 45px;
+	top: -2px;
+}
+#maintitle{
+	top: 10%;
+	left: 50%;
+	text-align: center;
+	color: white;
+	font-size: 50px;
+	font-family: 'Roboto', sans-serif;
+	  transform: translate(-50%, -50%);
+		position: absolute;
+}
+#rank{
+	position: relative;
+	right: -79px;
+	top: 10px;
+}
+#rankno{
+	#position: relative;
+	margin-top: 10px;
+}
+#name{
+	position: relative;
+	left: -8%;
+}
+</style>
+</head>
+
+<body onload="invisable();">
+<p id="maintitle">Cryptocurrency Price Checker</p>
+
+<div id="coininfo">
+
+	<div id= "name">
+		<table>
+		<tr> <img src="" id="img"></img><td><div id="id"></div></td><td id="rankno">Rank <span id="rank"></span></td> </tr>
+		<tr> <td><div id="description">Price $AUD </div></td><td><div id="price"></div></td> </tr>
+		<tr> <td><div id="description2">Market Cap $AUD </div></td><td><div id="mktcap"></div></td> </tr>
+		</table>
+	</div>
+</div>
+<div id="cointype">
+	<div class="input-group">
+
+				<input type="text" id="first" class="minput" placeholder="Coin Name"name="currency" onkeyup="setTimeout(formChanged,2000);" onchange="formChanged()">
+
+		</div>
+	</form>
+</div>
+</body>
+<!-- particles.js container -->
+<div id="particles-js"></div>
+
+<!-- scripts -->
+<script src="particles.js"></script>
+<script src="js/app.js"></script>
+</html>
